@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from ..database import get_session
 from sqlalchemy.future import select
 from ..models.users import User
-from ..utils.security import hash_password, is_strong_password
+from ..utils.security import hash_password, is_strong_password, create_email_verification_token
 from ..utils.unit_of_work import UnitOfWork
 
 # Create a router for user-related endpoints
@@ -46,6 +46,7 @@ async def register_user(payload: UserCreate, db=Depends(get_session)):
     )
     db.add(new_user)
     await uow.commit()
-
     await db.refresh(new_user)
+
+    token = create_email_verification_token(new_user.id)
     return new_user
