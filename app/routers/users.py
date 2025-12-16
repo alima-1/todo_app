@@ -4,9 +4,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from ..database import get_session
 from sqlalchemy.future import select
 from ..models.users import User
-from ..utils.security import hash_password, is_strong_password, create_email_verification_token
+from ..utils.security import (
+    hash_password,
+    is_strong_password,
+    create_email_verification_token
+)
 from ..utils.unit_of_work import UnitOfWork
-
+        
 # Create a router for user-related endpoints
 router = APIRouter()
 

@@ -9,7 +9,7 @@ on:
 
 
 jobs:
-  run-tests
+  setup-environment:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,12 +17,16 @@ jobs:
        uses: actions/checkout@v4
 
       -name: Set up Python
-        uses: actions/set-up-python@v4
+        uses: actions/set-up-python@v5
         with:
           python-version: '3.9'
         
       -name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-dev.txt
 
-      -name: Run tests
-        run: pytest 
+      -name: lint code
+        run: |
+          pip install flake8
+          flake8 .
+
+      
