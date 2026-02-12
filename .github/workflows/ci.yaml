@@ -1,0 +1,30 @@
+
+name: CI Pipeline
+
+on: 
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+
+jobs:
+  setup-environment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+        
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: lint code
+        run: flake8 .
+
+      

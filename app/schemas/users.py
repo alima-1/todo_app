@@ -1,6 +1,5 @@
 # app/schemas/user.py
-from pydantic import BaseModel, EmailStr
-from typing import Optional
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class UserCreate(BaseModel):
@@ -13,8 +12,7 @@ class UserRead(BaseModel):
     email: EmailStr
     is_verified: bool
     created_at: str
-    last_login: Optional[str] = None
+    last_login: str | None = None
 
     # Enable ORM mode to work with SQLAlchemy models
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

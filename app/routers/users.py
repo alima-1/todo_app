@@ -9,10 +9,8 @@ from ..utils.security import (
     is_strong_password,
     create_email_verification_token
 )
-from ..utils.unit_of_work import UnitOfWork
-        
 # Create a router for user-related endpoints
-router = APIRouter()
+router = APIRouter(prefix="/users", tags=["users"])
 
 
 # Endpoint to register a new user

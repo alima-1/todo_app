@@ -6,12 +6,6 @@ from sqlalchemy import (
 from sqlalchemy.sql import func
 from ..database import Base
 
-# # Define an enumeration for preferred 2FA methods
-# class TwoFAMethod(PyEnum):
-#     AUTHENTICATOR_APP = "Authenticator App"
-#     SMS = "SMS"
-#     biometric = "Biometric"
-
 
 class User(Base):
     __tablename__ = "users"

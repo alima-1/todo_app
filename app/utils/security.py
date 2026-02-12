@@ -3,6 +3,11 @@ from passlib.context import CryptContext
 import re
 import jwt
 from datetime import datetime, timedelta
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -20,16 +25,18 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def is_strong_password(password: str) -> bool:
     """Check if the password meets strength requirements."""
     if (len(password) < 8 or
-        not re.search(r"[A-Z]", password) or
-        not re.search(r"[a-z]", password) or
-        not re.search(r"[0-9]", password) or
-        not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password)):
+            not re.search(r"[A-Z]", password) or
+            not re.search(r"[a-z]", password) or
+            not re.search(r"[0-9]", password) or
+            not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password)):
         return False
     return True
 
 
-# secret key for JWT encoding/decoding
-SECRET_KEY = "your_secret_key"
+# secret key for JWT encoding/decoding (from environment variable)
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY environment variable is not set")
 # algorithm used for JWT
 ALGORITHM = "HS256"
 

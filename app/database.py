@@ -15,18 +15,18 @@ engine = create_async_engine(DATABASE_URL, echo=True)
 
 # Create a session factory
 # SessionLocal will be used in routes to get a session
-asyns_session = async_sessionmaker(
+async_session = async_sessionmaker(
     bind=engine,
     expire_on_commit=False
 )
 
 # Base class for models
-# All your SQLAlchemy models will inherit from Base
+# All your SQLAlchemy models will inherit from Bas
 Base = declarative_base()
 
 
 # Dependency to provide DB session in routes
 # FastAPI can use this with Depends
 async def get_session():
-    async with asyns_session() as session:
+    async with async_session.begin() as session:
         yield session
