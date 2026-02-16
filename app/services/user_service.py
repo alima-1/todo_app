@@ -1,6 +1,7 @@
 # service.py
 from sqlalchemy.ext.asyncio import AsyncSession as Session
 from sqlalchemy import select
+from app.exceptions import UserAlreadyExistsError, WeakPasswordError
 from app.models.users import User
 from ..schemas.users import UserCreate, UserRead
 from ..utils.security import hash_password, is_strong_password
@@ -16,10 +17,10 @@ class UserService:
         )
         existing_user = result.scalar_one_or_none()
         if existing_user:
-            raise ValueError("Email already registered")
+            raise UserAlreadyExistsError(user_data.email)
 
         if not is_strong_password(user_data.password):
-            raise ValueError("Password does not meet strength requirements")
+            raise WeakPasswordError
 
         hashed_password = hash_password(user_data.password)
         new_user = User(
@@ -29,4 +30,4 @@ class UserService:
         self.db.add(new_user)
         self.db.flush()  # flush to get the new user's ID
         self.db.refresh(new_user)  # refresh to get the new user's data
-        return new_user
+        return UserRead.model_validate(new_user)

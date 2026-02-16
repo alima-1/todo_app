@@ -9,46 +9,14 @@ from ..utils.security import (
     is_strong_password,
     create_email_verification_token
 )
+from ..services.user_service import UserService
+
+
 # Create a router for user-related endpoints
 router = APIRouter(prefix="/users", tags=["users"])
 
 
 # Endpoint to register a new user
 @router.post("/register", response_model=UserRead, status_code=201)
-async def register_user(payload: UserCreate, db=Depends(get_session)):
-
-    # create a unit of work instance
-    uow = UnitOfWork(session=db)
-
-    # check if user with email already exists
-    result = await db.execute(
-        select(User).where(User.email == payload.email)
-    )
-    existing_user = result.scalar_one_or_none()
-    if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
-        )
-
-    # check password strength
-    if not is_strong_password(payload.password):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password does not meet strength requirements"
-        )
-
-    # hash the password
-    hashed_password = hash_password(payload.password)
-
-    # create new user instance
-    new_user = User(
-        email=payload.email,
-        password_hash=hashed_password
-    )
-    db.add(new_user)
-    await uow.commit()
-    await db.refresh(new_user)
-
-    token = create_email_verification_token(new_user.id)
-    return new_user
+async def register_new_user(payload: UserCreate, db=Depends(get_session)):
+   
