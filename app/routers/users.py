@@ -1,13 +1,9 @@
 # app/routers/users.py
 
 from ..schemas.users import UserCreate, UserRead
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from ..database import get_session
-from sqlalchemy.future import select
-from ..models.users import User
 from ..utils.security import (
-    hash_password,
-    is_strong_password,
     create_email_verification_token
 )
 from ..services.user_service import UserService

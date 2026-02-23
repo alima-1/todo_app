@@ -1,7 +1,7 @@
 # service.py
 from sqlalchemy.ext.asyncio import AsyncSession as Session
 from sqlalchemy import select
-from app.exceptions import UserAlreadyExistsError, WeakPasswordError
+from app.exceptions.exceptions import UserAlreadyExistsError, WeakPasswordError
 from app.models.users import User
 from ..schemas.users import UserCreate, UserRead
 from ..utils.security import hash_password, is_strong_password

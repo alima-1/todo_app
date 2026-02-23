@@ -1,6 +1,7 @@
 # app/exceptions/handlers.py
-from fastapi import FastAPI, Request, JSONResponse
+from fastapi import FastAPI, Request
 from .exceptions import ServiceError
+from fastapi.responses import JSONResponse
 
 
 def register_exception_handlers(app: FastAPI):
