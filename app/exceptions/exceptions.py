@@ -4,6 +4,9 @@ from fastapi import status
 
 class ServiceError(Exception):
     """Base class for service-related exceptions."""
+
+    error_code: str = "service_error"
+
     def __init__(
         self,
         message: str,
@@ -17,6 +20,9 @@ class ServiceError(Exception):
 class UserAlreadyExistsError(ServiceError):
     """Exception raised when trying to register a user with an
     email that already exists."""
+
+    error_code = "user_already_exists"
+
     def __init__(self, email: str):
         message = f"Email '{email}' is already registered."
         super().__init__(message, status_code=status.HTTP_409_CONFLICT)
@@ -25,6 +31,9 @@ class UserAlreadyExistsError(ServiceError):
 class WeakPasswordError(ServiceError):
     """Exception raised when a provided password does not meet strength
     requirements."""
+
+    error_code = "weak_password"
+
     def __init__(self):
         message = "Password does not meet strength requirements."
         super().__init__(message)
