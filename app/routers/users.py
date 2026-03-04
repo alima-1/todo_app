@@ -2,7 +2,7 @@
 
 from ..schemas.users import UserCreate, UserRead
 from fastapi import APIRouter, Depends
-from ..database import get_session
+from ..config.database import get_session
 from ..utils.security import (
     create_email_verification_token
 )

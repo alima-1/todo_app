@@ -3,7 +3,7 @@ from sqlalchemy import (
     ForeignKey, DateTime
 )
 from sqlalchemy.sql import func
-from ..database import Base
+from ..config.database import Base
 
 
 class TrustedDevice(Base):

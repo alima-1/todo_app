@@ -1,6 +1,7 @@
 # main.py
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from app.exceptions.handlers import register_exception_handlers
 from .routers import users as users_router
@@ -21,7 +22,7 @@ async def lifespan(app: FastAPI):
     try:
         # Test the database connection
         async with engine.connect() as conn:
-            await conn.execute("SELECT 1")
+            await conn.execute(text("SELECT 1"))
         print("Database connection successful!")
     except Exception as e:
         print(f"Database connection failed: {e}")
