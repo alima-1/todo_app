@@ -5,7 +5,7 @@ import jwt
 from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
-import httpx
+from httpx import AsyncClient
 
 # Load environment variables from .env file
 load_dotenv()
@@ -73,14 +73,14 @@ def create_vefication_link(token: str) -> str:
 
 
 async def send_verification_email(email: str, verification_link: str):
-    url = "https://sandbox.api.mailtrap.io"
+    url = "https://sandbox.api.mailtrap.io/api/send"
     headers = {
         "Api-Token": os.getenv("MAILTRAP_API_TOKEN"),
         "Content-Type": "application/json"
     }
     payload = {
         "from": {
-            "email": "demomailtrap.co",
+            "email": "verify@demomailtrap.co",
             "name": "Task Management App"
         },
         "to": [
@@ -94,9 +94,9 @@ async def send_verification_email(email: str, verification_link: str):
             f"<a href='{verification_link}'>Verify Email</a></p>"
         )
     }
-    async with httpx.AsyncClient() as client:
+    async with AsyncClient() as client:
         response = await client.post(
-            f"{url}/api/send", json=payload, headers=headers
+            url, json=payload, headers=headers
         )
         if response.status_code != 200:
             print(f"Failed to send email: {response.text}")
