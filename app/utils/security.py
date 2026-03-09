@@ -95,8 +95,5 @@ async def send_verification_email(email: str, verification_link: str):
         )
     }
     async with AsyncClient() as client:
-        response = await client.post(
-            url, json=payload, headers=headers
-        )
-        if response.status_code != 200:
-            print(f"Failed to send email: {response.text}")
+        response = await client.post(url, json=payload, headers=headers)
+        response.raise_for_status()  # raise an error for bad response
