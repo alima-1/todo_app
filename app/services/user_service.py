@@ -28,6 +28,17 @@ class UserService:
             password_hash=hashed_password
         )
         self.db.add(new_user)
-        self.db.flush()  # flush to get the new user's ID
-        self.db.refresh(new_user)  # refresh to get the new user's data
+        await self.db.flush()  # flush to get the new user's ID
+        await self.db.refresh(new_user)  # refresh to get the new user's data
         return UserRead.model_validate(new_user)
+
+    async def verify_user_email(self, user_id: int):
+        result = await self.db.execute(
+            select(User).where(User.id == user_id)
+        )
+        user = result.scalar_one_or_none()
+        if not user:
+            raise ValueError("User not found")
+        user.is_verified = True
+        self.db.add(user)
+        await self.db.commit()
