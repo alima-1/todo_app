@@ -41,4 +41,13 @@ class UserService:
             raise ValueError("User not found")
         user.is_verified = True
         self.db.add(user)
-        await self.db.commit()
+        await self.db.flush()
+
+    async def get_user_by_id(self, user_id: int) -> UserRead:
+        result = await self.db.execute(
+            select(User).where(User.id == user_id)
+        )
+        user = result.scalar_one_or_none()
+        if not user:
+            raise ValueError("User not found")
+        return UserRead.model_validate(user)
