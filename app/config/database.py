@@ -11,5 +11,5 @@ Base = declarative_base()
 # Dependency to provide DB session in routes
 # FastAPI can use this with Depends
 async def get_session(request: Request):
-    async with request.app.state.db_session_factory() as session:
+    async with request.app.state.db_session_factory.begin() as session:
         yield session
