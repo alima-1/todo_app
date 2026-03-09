@@ -39,7 +39,13 @@ async def register_new_user(
         new_user.email,
         verification_link
     )
-    return new_user
+    return {
+        "user": new_user,
+        "msg": (
+            "User registered successfully! "
+            "Please check your email to verify your account."
+        )
+    }
 
 
 # Endpoint to verify email
