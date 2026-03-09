@@ -1,7 +1,7 @@
 # app/routers/users.py
 
 from ..schemas.users import UserCreate, UserRead
-from fastapi import APIRouter, Depends, BackgroundTasks
+from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
 from ..config.database import get_session
 from ..utils.security import (
     create_email_verification_token,
@@ -58,3 +58,28 @@ async def verify_email(token: str, db=Depends(get_session)):
         return {"message": "Email verified successfully!"}
     except ValueError as e:
         return {"error": str(e)}
+
+
+@router.post("/send-verification-email/{user_id}")
+async def resend_verification_email(
+    user_id: int,
+    db=Depends(get_session)
+):
+    user_service = UserService(db)
+    user = await user_service.get_user_by_id(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Generate email verification token and link
+    verification_token = create_email_verification_token(user.email)
+    verification_link = create_vefication_link(verification_token)
+
+    # Send the verification email
+    try:
+        await send_verification_email(user.email, verification_link)
+        return {"message": "Verification email sent!"}
+    except Exception:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to send verification email"
+        )
