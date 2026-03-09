@@ -36,4 +36,6 @@ class WeakPasswordError(ServiceError):
 
     def __init__(self):
         message = "Password does not meet strength requirements."
-        super().__init__(message)
+        super().__init__(
+            message, status_code=status.HTTP_422_UNPROCESSABLE_CONTENT
+        )
