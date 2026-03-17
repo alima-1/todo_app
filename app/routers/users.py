@@ -1,6 +1,6 @@
 # app/routers/users.py
 
-from ..schemas.users import UserCreate, UserRead
+from ..schemas.users import UserCreate, UserRegisterResponse
 from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
 from ..config.database import get_session
 from ..utils.security import (
@@ -17,7 +17,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 
 # Endpoint to register a new user
-@router.post("/register", response_model=UserRead, status_code=201)
+@router.post("/register", response_model=UserRegisterResponse, status_code=201)
 async def register_new_user(
     user_data: UserCreate,
     background_tasks: BackgroundTasks,

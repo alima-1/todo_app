@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
         # Test the database connection
         async with engine.connect() as conn:
             await conn.execute(text("SELECT 1"))
-        print("Database connection successful!")
+            print("Database connection successful!")
     except Exception as e:
         print(f"Database connection failed: {e}")
         raise e
@@ -31,7 +31,10 @@ async def lifespan(app: FastAPI):
     app.state.db_session_factory = async_sessionmaker(
         bind=engine, expire_on_commit=False
     )
+
+    # Yield control to the application to start handling requests
     yield
+
     # shutdown code if needed
     print("Shutting down...")
     await engine.dispose()

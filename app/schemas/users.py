@@ -1,5 +1,6 @@
 # app/schemas/user.py
 from pydantic import BaseModel, EmailStr, ConfigDict
+from datetime import datetime
 
 
 class UserCreate(BaseModel):
@@ -11,8 +12,13 @@ class UserRead(BaseModel):
     id: int
     email: EmailStr
     is_verified: bool
-    created_at: str
+    created_at: datetime
     last_login: str | None = None
 
     # Enable ORM mode to work with SQLAlchemy models
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserRegisterResponse(BaseModel):
+    user: UserRead
+    msg: str

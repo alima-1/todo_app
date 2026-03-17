@@ -1,4 +1,0 @@
-#requirements.in
--r requirements.in
-flake8
-pytest

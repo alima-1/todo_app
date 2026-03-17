@@ -1,8 +1,0 @@
-#requirement.in
-fastapi
-uvicorn
-SQLAlchemy
-asyncpg
-python-dotenv
-passlib
-bcrypt
