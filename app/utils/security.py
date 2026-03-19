@@ -1,12 +1,12 @@
 # app/utils/security.py
+import mailtrap
 from passlib.context import CryptContext
 import re
 import jwt
 from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
-from httpx import AsyncClient
-
+from mailtrap import MailtrapClient, Mail, Address
 # Load environment variables from .env file
 load_dotenv()
 
@@ -69,31 +69,34 @@ def decode_email_verification_token(token: str) -> int:
 
 def create_vefication_link(token: str) -> str:
     """Create a verification link for the user to click."""
-    return f"http://localhost:8000/verify-email?token={token}"
+    return f"http://localhost:8000/users/verify_email?token={token}"
+
+
+MAILTRAP_API_TOKEN = os.getenv("MAILTRAP_API_TOKEN")
+if not MAILTRAP_API_TOKEN:
+    raise ValueError("MAILTRAP_API_TOKEN environment variable is not set")
 
 
 async def send_verification_email(email: str, verification_link: str):
-    url = "https://sandbox.api.mailtrap.io/api/send"
-    headers = {
-        "Api-Token": os.getenv("MAILTRAP_API_TOKEN"),
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "from": {
-            "email": "verify@demomailtrap.co",
-            "name": "Task Management App"
-        },
-        "to": [
-            {
-                "email": email
-            }
-        ],
-        "subject": "Verify your email",
-        "html": (
-            f"<p>Please click the link to verify your email: "
-            f"<a href='{verification_link}'>Verify Email</a></p>"
+    try:
+        mail = Mail(
+            sender=Address(
+                email="taskmgmt@example.com", name="Task Management App"
+            ),
+            to=[Address(email=email)],
+            subject="Verify your email",
+            html=f"<p>Please click the link to verify your email: <a href='{verification_link}'>Verify Email</a></p>",
         )
-    }
-    async with AsyncClient() as client:
-        response = await client.post(url, json=payload, headers=headers)
-        response.raise_for_status()  # raise an error for bad response
+
+        client = MailtrapClient(
+            token=MAILTRAP_API_TOKEN,
+            sandbox=True,
+            inbox_id=4425121
+        )
+
+        client.send(mail)
+        return True
+
+    except Exception as e:
+        print(f"Error sending verification email: {e}")
+        return False
