@@ -71,7 +71,7 @@ async def resend_verification_email(
         raise HTTPException(status_code=404, detail="User not found")
 
     # Generate email verification token and link
-    verification_token = create_email_verification_token(user.email)
+    verification_token = create_email_verification_token(user.id)
     verification_link = create_vefication_link(verification_token)
 
     # Send the verification email
