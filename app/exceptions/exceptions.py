@@ -39,3 +39,13 @@ class WeakPasswordError(ServiceError):
         super().__init__(
             message, status_code=status.HTTP_422_UNPROCESSABLE_CONTENT
         )
+
+
+class UserNotFoundError(Exception):
+
+    """Exception raised when a user is not found in the database."""
+
+    def __init__(self, user_id: int):
+        self.message = f"User with ID {user_id} not found."
+        self.status_code = status.HTTP_404_NOT_FOUND
+        super().__init__(self.message)
