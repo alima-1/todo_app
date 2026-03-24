@@ -3,7 +3,6 @@
 import datetime
 
 import jwt
-import
 from ..schemas.users import UserCreate, UserRegisterResponse
 from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
 from ..config.database import get_session
@@ -14,7 +13,7 @@ from ..utils.security import (
     verify_token
 )
 from ..services.user_service import UserService
-from datetime import timedelta, timezone
+from datetime import timedelta, timezone, datetime
 from app.exceptions.exceptions import UserNotFoundError
 
 # Create a router for user-related endpoints
@@ -62,13 +61,15 @@ async def verify_email(token: str, db=Depends(get_session)):
         await user_service.verify_user_email(user_id)
         return {"message": "Email verified successfully!"}
     except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=400, detail="Verification token has expired")
+        raise HTTPException(
+            status_code=400, detail="Verification token has expired")
     except jwt.InvalidTokenError:
-        raise HTTPException(status_code=400, detail="Invalid verification token")   
+        raise HTTPException(
+            status_code=400, detail="Invalid verification token")   
     except UserNotFoundError as e:
-        raise HTTPException(status_code=404, detail=e.message)              
-    
-    
+        raise HTTPException(status_code=404, detail=e.message)
+
+
 @router.post("/send-verification-email/{user_id}")
 async def resend_verification_email(
     user_id: int,
