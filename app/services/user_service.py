@@ -1,7 +1,8 @@
 # service.py
 from sqlalchemy.ext.asyncio import AsyncSession as Session
 from sqlalchemy import select
-from app.exceptions.exceptions import UserAlreadyExistsError, WeakPasswordError
+from app.exceptions.exceptions import (UserAlreadyExistsError, 
+                                       WeakPasswordError, UserNotFoundError)
 from app.models.users import User
 from ..schemas.users import UserCreate
 from ..utils.security import hash_password, is_strong_password
@@ -38,7 +39,7 @@ class UserService:
         )
         user = result.scalar_one_or_none()
         if not user:
-            raise ValueError("User not found")
+            raise UserNotFoundError(user_id)
         user.is_verified = True
         self.db.add(user)
         await self.db.flush()
@@ -49,5 +50,5 @@ class UserService:
         )
         user = result.scalar_one_or_none()
         if not user:
-            raise ValueError("User not found")
+            raise UserNotFoundError(user_id)   
         return user
