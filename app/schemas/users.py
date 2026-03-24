@@ -14,6 +14,7 @@ class UserRead(BaseModel):
     is_verified: bool
     created_at: datetime
     last_login: str | None = None
+    last_verification_email_sent_at: datetime | None = None
 
     # Enable ORM mode to work with SQLAlchemy models
     model_config = ConfigDict(from_attributes=True)
