@@ -1,5 +1,4 @@
 # app/utils/security.py
-import mailtrap
 from passlib.context import CryptContext
 import re
 import jwt
@@ -52,24 +51,15 @@ def create_email_verification_token(user_id: int) -> str:
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 
-def decode_email_verification_token(token: str) -> int:
+def verify_token(token: str) -> int:
     """Decode a JWT token and return the user ID if valid."""
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        if payload.get("purpose") != "email_verification":
-            raise jwt.InvalidTokenError
-        return payload.get("user_id")
-    except jwt.ExpiredSignatureError:
-        raise ValueError("Token has expired")
-    except jwt.InvalidTokenError:
-        raise ValueError("Invalid token")
-    except jwt.InvalidSignatureError:
-        raise ValueError("Invalid token signature")
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    return payload.get("user_id")
 
 
 def create_vefication_link(token: str) -> str:
     """Create a verification link for the user to click."""
-    return f"http://localhost:8000/users/verify_email?token={token}"
+    return f"http://localhost:8000/users/verify-email?token={token}"
 
 
 MAILTRAP_API_TOKEN = os.getenv("MAILTRAP_API_TOKEN")
