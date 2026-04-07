@@ -1,7 +1,5 @@
 # app/routers/users.py
 
-import datetime
-
 import jwt
 from ..schemas.users import UserCreate, UserRegisterResponse
 from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
